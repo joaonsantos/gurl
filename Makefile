@@ -26,7 +26,7 @@ test-unit:
 .PHONY: changelog
 changelog:
 	@./$@.sh $(NUM_COMMITS)
-	@cat $@.txt
+	@cat CHANGELOG.md
 
 # ------------------------------------------------------------------------------
 #  install
