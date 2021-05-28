@@ -7,38 +7,6 @@ import (
 	"testing"
 )
 
-func TestCurlErrors(t *testing.T) {
-
-	tt := []struct {
-		name string
-		args []string
-		err  string
-	}{
-		{
-			"no args",
-			[]string{"main"},
-			"no arguments",
-		},
-		{
-			"no protocol",
-			[]string{"main", "google.com"},
-			`Get "google.com": unsupported protocol scheme ""`,
-		},
-	}
-
-	for _, tc := range tt {
-		t.Run(tc.name, func(t *testing.T) {
-			out := httptest.NewRecorder()
-
-			err := Fetch(out, tc.args)
-			if err.Error() != tc.err {
-				t.Errorf("expected to get %v, got %v", tc.err, err)
-			}
-		})
-	}
-
-}
-
 func handler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
@@ -46,12 +14,15 @@ func handler() http.Handler {
 	})
 }
 
-func TestCurlOk(t *testing.T) {
+func TestGurl(t *testing.T) {
 	testServer := httptest.NewServer(handler())
 	defer testServer.Close()
 
 	out := httptest.NewRecorder()
-	args := []string{"main", testServer.URL}
+	args := Args{
+		Headers: false,
+		URL:     testServer.URL,
+	}
 
 	err := Fetch(out, args)
 	if err != nil {
